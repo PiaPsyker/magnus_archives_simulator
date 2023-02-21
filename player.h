@@ -7,7 +7,7 @@ class Player {
     int age;
     std::string gender;
     std::string pronouns;
-    int job;
+    int job;        // 0: Archivist; 1; Archival Assistant; 2: Artifact Storage; 3: Librarian; 4: Researcher; 5: Archive Security; 6: Receptionist; 7: Administrator; 8: Janitor;  98: Head Archivist; 99: Head of the Magnus Institute; 8008: Resident SLUT;)
     int avatar;
 
 public:
