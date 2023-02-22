@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <stdlib.h>
 #include "player.h"
 
@@ -30,41 +31,41 @@ void initial() {
     std::cout << "\n";
 }
 
-void record_statement() {
+void record_statement(std::string date) {
     // Author
     // Statement Giver
     // Type of Statement
     // Subject / Short Description
     std::ofstream statement;
     // TODO Set name to in-game date
-    statement.open("statement.txt", std::ios::out | std::ios::trunc);
+    statement.open(date+".txt", std::ios::out | std::ios::trunc);
 
     std::string author;
     std::string statement_giver;
-    std::string type;
     std::string subject;
     std::string statement_txt;
+    std::string notes;
 
     std::cout << "\n>> NEW STATEMENT <<" << std::endl;
-    std::cout << "\nAuthor: ";
+    std::cout << "\Recorded by: ";  // Jonathan Sims
     std::getline(std::cin, author);
-    statement << "Author: " + author + "\n";
+    statement << "Recorded by: " + author + "\n";
 
-    std::cout << "\nStatement giver: ";
+    std::cout << "\nStatement giver: ";     //Nathan Watts
     std::getline(std::cin, statement_giver);
     statement << "Statement giver: " + statement_giver + "\n";
-
-    std::cout << "\nType of Statement: ";
-    std::getline(std::cin, type);
-    statement << "Type of Statement: " + type + "\n";
 
     std::cout << "\nSubject: ";
     std::getline(std::cin, subject);
     statement << "Subject: " + subject + "\n";
 
-    std::cout << "\Statement: ";
+    std::cout << "\nStatement: ";
     std::getline(std::cin, statement_txt);
     statement << "Statement: " + statement_txt + "\n";
+
+    std::cout << "\nAdditional Notes: ";
+    std::getline(std::cin, notes);
+    statement << "Additional Notes: " + notes + "\n";
 
     statement.close();
 }
@@ -79,17 +80,20 @@ void show_options() {
     std::cout << "\t\t\t\t\tÍ> [3] Research" << std::endl;
     std::cout << "\n" << std::endl;
     std::string io;
+    std::string date = "0230222";
     while (io != "1" && io != "2" && io != "3") {
         std::cout << ">>>> Choose an Option:\nÍ> ";
         std::getline(std::cin, io);
     }
     if (io == "1") {
         std::cout << "\t\t\t\t\t>>>> RECORD NEW STATEMENT <<<<" << std::endl;
-        record_statement();
+        record_statement(date);
     } else if (io == "2") {
         std::cout << "\t\t\t\t\t>>>> READ STATEMENT <<<<" << std::endl;
+        //read_statement();
     } else {
         std::cout << "\t\t\t\t\t>>>> RESEARCH <<<<" << std::endl;
+        //research();
     }
 }
 
@@ -108,7 +112,6 @@ int title_screen() {
         std::cout << "\t\t\t\t\t>>>> NEW USER <<<<" << std::endl;
         return 1;
     } else if (io == "2") {
-        std::cout << "NOT AVAILABLE" << std::endl;
         return 2;
     } else if (io == "3") {
         credits();
@@ -134,15 +137,15 @@ int main()
     // Initalize Player Object
     Player player;
     std::string pname;
-    int page;
+    std::string page;
     std::string pgender;
     std::string ppronouns;
-    int pjob;
-    int pavatar;
+    std::string pjob;
+    std::string pavatar;
 
     // I WAKE UP TO THE SOUNDS
     // Load save file 
-    std::ofstream sfile;
+    
 
     // Exiting game state
     while (game_state == 0) {
@@ -153,6 +156,8 @@ int main()
     // New game
     while (game_state == 1) {
         
+        std::ofstream sfile;
+
         // Sets player name and writes to save file
         std::cout << "\n>>>> What is your name?\nÍ> ";
         std::getline(std::cin, pname);
@@ -164,9 +169,7 @@ int main()
 
         // Sets player age and writes to save file
         std::cout << "\n>>>> What is your age?\nÍ> ";
-        std::string age;
-        std::getline(std::cin, age);
-        page = std::stoi(age);
+        std::getline(std::cin, page);
         player.set_age(page);
         sfile << page << "\n";
 
@@ -184,15 +187,16 @@ int main()
         player.set_pronouns(ppronouns);
         sfile << ppronouns << "\n";
 
-        // TODO Job
-        std::string job;
-        while (job != "0" && job != "1" && job != "2" && job != "3" && job != "4" && job != "5" && job != "6" && job != "7" && job != "8" && job != "98" && job != "99") {
+        // Sets players job and writes to save file
+        while (pjob != "0" && pjob != "1" && pjob != "2" && pjob != "3" && pjob != "4" && pjob != "5" && pjob != "6" && pjob != "7" && pjob != "8" && pjob != "98" && pjob != "99") {
             std::cout << "\n>>>> What is your Job at the Magnus Institute?\n\n[0] Archivist\n[1] Archival Assistant\n[2] Artifact Storage\n[3] Librarian\n[4] Researcher\n[5] Archive Security\n[6] Receptionist\n[7] Administrator\n[8] Janitor\n\nEnter Number of JobÍ> ";
-            std::getline(std::cin, job);
+            std::getline(std::cin, pjob);
         }
-        pjob = std::stoi(job);
         player.set_job(pjob);
         sfile << pjob << "\n";
+
+        pavatar = "0";
+        sfile << pavatar << "\n";
         
         // Sets game state for save file to 5
         sfile << "5" << "\n";
@@ -206,7 +210,25 @@ int main()
 
     // Load game
     while (game_state == 2) {
-        // TODO
+
+        std::string file_name;
+        std::cout << "Which file to load?\n[Syntax 'player name.bin']\nÍ> ";
+        std::getline(std::cin, file_name);
+
+        std::ifstream lfile(file_name);
+        std::string line;
+        std::string text[20];
+        for (int i = 0; i < 20; i++) {
+            getline(lfile, text[i]);
+        }
+        lfile.close();
+        pname = text[0];
+        page = text[1];
+        pgender = text[2];
+        ppronouns = text[3];
+        pjob = text[4];
+        pavatar = text[5];
+        game_state = std::stoi(text[6]);
     }
 
     // Main game state

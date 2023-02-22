@@ -1,0 +1,7 @@
+#Name
+#Age
+#Gender
+#Pronouns
+#Job Number
+#Avatar
+#Game State

@@ -1,6 +1,8 @@
 #include <iostream>
-#include <stdlib.h>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <stdlib.h>
 
 class Player {
     std::string name;
@@ -11,12 +13,13 @@ class Player {
     int avatar;
 
 public:
+
     void set_name(std::string io_name) { name = io_name; };
-    void set_age(int io_age) { age = io_age; };
+    void set_age(std::string io_age) { age = std::stoi(io_age); };
     void set_gender(std::string io_gender) { gender = io_gender; };
     void set_pronouns(std::string io_pronouns) { pronouns = io_pronouns; };
-    void set_job(int io_job) { job = io_job; };
-    void set_avatar(int io_avatar) { avatar = io_avatar; };
+    void set_job(std::string io_job) { job = std::stoi(io_job);};
+    void set_avatar(std::string io_avatar) { avatar = std::stoi(io_avatar); };
 
     std::string get_name() { return name; };
     int get_age() { return age; };
